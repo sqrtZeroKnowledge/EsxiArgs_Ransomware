@@ -2,17 +2,14 @@
 In this repository, an analysis of the EsxiArgs encrypted binary file is produced. Based on reverse engineering analysis, we have become capable of creating a sample decryption process that is based on the sosemanuk_encryption and gen_stream_key of the ransomware.
 
 ![sosemanuk_encrypt](https://i.imgur.com/nrUf33D.png)
+
 Details:
 
-his is a C++ function that encrypts a file. The function takes five arguments:
+The function sosemanuk_encrypt implements the encryption process for the Sosemanuk stream cipher. The function takes 4 parameters: param_1, param_2, param_3, and param_4. The first parameter, param_1, is a pointer to a buffer of data used by the Sosemanuk algorithm, while the second and third parameters, param_2 and param_3, are pointers to the input plaintext and the output ciphertext, respectively. The fourth parameter, param_4, is the length of the plaintext.
 
--   `param_1`: A filename for the file to be encrypted.
--   `param_2`: RSA public key to encrypt the stream key.
--   `param_3`: Algorithm to encrypt the data.
--   `param_4`: Size of data to encrypt.
--   `param_5`: Key derivation iteration count.
+The function uses a local variable local_38 to keep track of the remaining length of the plaintext that needs to be encrypted. The function also has several other local variables: local_30 and local_28, which are used to keep track of the current position in the input and output buffers, respectively, and local_10, which is used as a temporary variable.
 
-The function first opens the file using the `open_read_write` function. If it fails, it prints an error message and returns 1. If it succeeds, the function generates a stream key using the `gen_stream_key` function. If this fails, it prints an error message and returns 2. If it succeeds, it uses the RSA public key and the `rsa_encrypt` function to encrypt the stream key. If this fails, it prints an error message and returns 3. If it succeeds, it uses the `encrypt_simple` function to encrypt the data in the file using the encrypted stream key. If this fails, it prints an error message and returns 4. If it succeeds, the function uses the `lseek` function to position the file pointer at the end of the file and then writes the encrypted stream key to the end of the file using the `write` function. If this fails, it prints an error message and returns 5. If everything succeeds, the function returns 0.
+The function first checks if the value stored at param_1 + 0x80 is less than 0x50, and if so, it XORs the first 0x50 - (param_1 + 0x80) bytes of the plaintext with the internal state of the Sosemanuk cipher. The function then enters a loop that encrypts the remaining plaintext in blocks of 0x50 bytes at a time, updating the internal state of the Sosemanuk cipher after each block is encrypted. The encrypted blocks are then XORed with the plaintext to produce the ciphertext.
 
 gen_stream_key: 
 ![gen_stream_key: ](https://i.imgur.com/O6Poau9.png)
