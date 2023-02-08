@@ -66,3 +66,5 @@ index.html
     Note  
     SSH is turned on  
     Firewall is disabled
+
+Recovery data encrypted : https://github.com/cisagov/ESXiArgs-Recover
